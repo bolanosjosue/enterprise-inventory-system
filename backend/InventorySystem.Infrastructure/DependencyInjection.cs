@@ -49,6 +49,9 @@ public static class DependencyInjection
         // Services
         services.AddSingleton<IDateTime, DateTimeService>();
 
+        services.AddSingleton<IDateTime, DateTimeService>();
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
+
         return services;
     }
 }

@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using InventorySystem.Application.Common.Interfaces;
 
-namespace InventorySystem.Infrastructure.Services
+namespace InventorySystem.Infrastructure.Services;
+
+public class CurrentUserService : ICurrentUserService
 {
-    internal class CurrentUserService
-    {
-    }
+    public string? UserId => "system";
+    public string? Email => "system@inventory.com";
+    public string? Role => "Admin";
+    public bool IsAuthenticated => true;
 }
