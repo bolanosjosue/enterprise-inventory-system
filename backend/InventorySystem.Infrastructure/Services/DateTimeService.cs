@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using InventorySystem.Application.Common.Interfaces;
 
-namespace InventorySystem.Infrastructure.Services
+namespace InventorySystem.Infrastructure.Services;
+
+public class DateTimeService : IDateTime
 {
-    internal class DateTimeService
-    {
-    }
+    public DateTime UtcNow => DateTime.UtcNow;
 }
