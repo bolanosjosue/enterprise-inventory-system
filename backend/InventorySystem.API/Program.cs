@@ -1,3 +1,4 @@
+using InventorySystem.Application;
 using InventorySystem.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,6 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Add Application layer
+builder.Services.AddApplication(); 
 
 // Add Infrastructure layer
 builder.Services.AddInfrastructure(builder.Configuration);
