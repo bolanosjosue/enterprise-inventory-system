@@ -51,7 +51,9 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
             .HasDefaultValue(false);
 
         builder.Property(p => p.RowVersion)
-            .IsRowVersion();
+            .IsRowVersion()
+            .HasDefaultValue(new byte[] { 0 })
+            .ValueGeneratedOnAddOrUpdate();
 
         builder.Property(p => p.CreatedAt)
             .IsRequired();

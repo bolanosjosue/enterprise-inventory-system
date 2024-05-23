@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using InventorySystem.Application.Common.Models;
+using InventorySystem.Application.Products.DTOs;
+using MediatR;
 
-namespace InventorySystem.Application.Products.Queries.GetProductById
-{
-    internal class GetProductByIdQuery
-    {
-    }
-}
+namespace InventorySystem.Application.Products.Queries.GetProductById;
+
+public record GetProductByIdQuery(Guid Id) : IRequest<Result<ProductDto>>;
