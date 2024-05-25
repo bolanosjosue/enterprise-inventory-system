@@ -1,0 +1,12 @@
+﻿namespace InventorySystem.Application.Warehouses.DTOs;
+
+public class WarehouseDto
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Address { get; set; } = string.Empty;
+    public int? MaxCapacity { get; set; }
+    public bool IsActive { get; set; }
+    public int TotalMovements { get; set; }
+    public DateTime CreatedAt { get; set; }
+}
