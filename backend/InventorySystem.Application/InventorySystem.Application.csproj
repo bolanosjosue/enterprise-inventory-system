@@ -11,10 +11,6 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.11" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="StockMovements\Queries\" />
-  </ItemGroup>
-
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
