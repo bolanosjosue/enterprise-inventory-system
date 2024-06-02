@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace InventorySystem.Application.Categories.Queries.GetCategoryById;
 
-public class GetCategoryByIdQueryHandler : IRequestHandler<GetCategoryByIdQuery, Result<CategoryDto>>
+public class GetCategoryByIdQueryHandler : IRequestHandler<GetCategoryByIdQuery, Result<CategoryDo>>
 {
     private readonly IApplicationDbContext _context;
 
@@ -15,16 +15,16 @@ public class GetCategoryByIdQueryHandler : IRequestHandler<GetCategoryByIdQuery,
         _context = context;
     }
 
-    public async Task<Result<CategoryDto>> Handle(GetCategoryByIdQuery request, CancellationToken cancellationToken)
+    public async Task<Result<CategoryDo>> Handle(GetCategoryByIdQuery request, CancellationToken cancellationToken)
     {
         var category = await _context.Categories
             .Include(c => c.Products)
             .FirstOrDefaultAsync(c => c.Id == request.Id, cancellationToken);
 
         if (category == null)
-            return Result.Failure<CategoryDto>("Category not found");
+            return Result.Failure<CategoryDo>("Category not found");
 
-        var dto = new CategoryDto
+        var dto = new CategoryDo
         {
             Id = category.Id,
             Name = category.Name,

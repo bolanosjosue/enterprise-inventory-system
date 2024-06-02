@@ -4,4 +4,4 @@ using MediatR;
 
 namespace InventorySystem.Application.Categories.Queries.GetCategories;
 
-public record GetCategoriesQuery : IRequest<Result<List<CategoryDto>>>;
+public record GetCategoriesQuery : IRequest<Result<List<CategoryDo>>>;

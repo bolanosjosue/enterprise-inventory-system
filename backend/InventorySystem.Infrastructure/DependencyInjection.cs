@@ -1,4 +1,6 @@
 ﻿using InventorySystem.Application.Common.Interfaces;
+using InventorySystem.Application.Authentication.Services;
+using InventorySystem.Infrastructure.Identity;
 using InventorySystem.Infrastructure.Persistence;
 using InventorySystem.Infrastructure.Persistence.Interceptors;
 using InventorySystem.Infrastructure.Persistence.Repositories;
@@ -15,11 +17,9 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        // Interceptors
         services.AddScoped<AuditableEntityInterceptor>();
         services.AddScoped<SoftDeleteInterceptor>();
 
-        // DbContext
         services.AddDbContext<ApplicationDbContext>(options =>
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection")
@@ -34,19 +34,20 @@ public static class DependencyInjection
         services.AddScoped<IApplicationDbContext>(provider =>
             provider.GetRequiredService<ApplicationDbContext>());
 
-        // Repositories
         services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
         services.AddScoped<ProductRepository>();
         services.AddScoped<StockMovementRepository>();
 
-        // Unit of Work
         services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-        // Services
-        services.AddSingleton<IDateTime, DateTimeService>();
 
         services.AddSingleton<IDateTime, DateTimeService>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
+
+        // JWT Settings
+        services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
+
+        // Token Service
+        services.AddScoped<ITokenService, TokenService>();
 
         return services;
     }

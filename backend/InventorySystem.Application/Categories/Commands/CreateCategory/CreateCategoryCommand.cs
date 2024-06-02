@@ -4,7 +4,7 @@ using MediatR;
 
 namespace InventorySystem.Application.Categories.Commands.CreateCategory;
 
-public record CreateCategoryCommand : IRequest<Result<CategoryDto>>
+public record CreateCategoryCommand : IRequest<Result<CategoryDo>>
 {
     public string Name { get; init; } = string.Empty;
     public string? Description { get; init; }
