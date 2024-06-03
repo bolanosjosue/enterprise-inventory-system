@@ -4,10 +4,12 @@ using InventorySystem.Application.StockMovements.Commands.TransferStock;
 using InventorySystem.Application.StockMovements.Queries.GetMovementHistory;
 using InventorySystem.Application.StockMovements.Queries.GetStockByWarehouse;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InventorySystem.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class StockMovementsController : ControllerBase
@@ -60,6 +62,7 @@ public class StockMovementsController : ControllerBase
     }
 
     [HttpPost("purchase")]
+    [Authorize(Roles = "Admin,Supervisor")]
     public async Task<IActionResult> ProcessPurchase([FromBody] ProcessPurchaseCommand command)
     {
         var result = await _mediator.Send(command);
@@ -71,6 +74,7 @@ public class StockMovementsController : ControllerBase
     }
 
     [HttpPost("sale")]
+    [Authorize(Roles = "Admin,Supervisor,Operator")]
     public async Task<IActionResult> ProcessSale([FromBody] ProcessSaleCommand command)
     {
         var result = await _mediator.Send(command);
@@ -82,6 +86,7 @@ public class StockMovementsController : ControllerBase
     }
 
     [HttpPost("transfer")]
+    [Authorize(Roles = "Admin,Supervisor")]
     public async Task<IActionResult> TransferStock([FromBody] TransferStockCommand command)
     {
         var result = await _mediator.Send(command);

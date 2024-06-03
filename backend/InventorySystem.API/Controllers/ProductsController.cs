@@ -2,10 +2,12 @@
 using InventorySystem.Application.Products.Queries.GetProductById;
 using InventorySystem.Application.Products.Queries.GetProducts;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InventorySystem.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class ProductsController : ControllerBase
@@ -56,6 +58,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin,Supervisor")]
     public async Task<IActionResult> CreateProduct([FromBody] CreateProductCommand command)
     {
         var result = await _mediator.Send(command);
