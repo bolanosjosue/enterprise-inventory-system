@@ -2,10 +2,12 @@
 using InventorySystem.Application.Suppliers.Queries.GetSupplierById;
 using InventorySystem.Application.Suppliers.Queries.GetSuppliers;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InventorySystem.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class SuppliersController : ControllerBase
@@ -40,6 +42,7 @@ public class SuppliersController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin,Supervisor")]
     public async Task<IActionResult> CreateSupplier([FromBody] CreateSupplierCommand command)
     {
         var result = await _mediator.Send(command);

@@ -2,10 +2,12 @@
 using InventorySystem.Application.Warehouses.Queries.GetWarehouseById;
 using InventorySystem.Application.Warehouses.Queries.GetWarehouses;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InventorySystem.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class WarehousesController : ControllerBase
@@ -40,6 +42,7 @@ public class WarehousesController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> CreateWarehouse([FromBody] CreateWarehouseCommand command)
     {
         var result = await _mediator.Send(command);

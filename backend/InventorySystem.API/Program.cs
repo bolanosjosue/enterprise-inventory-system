@@ -1,8 +1,7 @@
-﻿using InventorySystem.Application;
+﻿using InventorySystem.API.Extensions;
+using InventorySystem.Application;
 using InventorySystem.Infrastructure;
-using InventorySystem.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -20,7 +19,6 @@ builder.Services.AddSwaggerGen(options =>
         Description = "Enterprise Inventory Management System"
     });
 
-    // JWT en Swagger
     options.AddSecurityDefinition("Bearer", new()
     {
         Name = "Authorization",
@@ -50,7 +48,6 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
-// JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var secretKey = jwtSettings["Secret"] ?? throw new InvalidOperationException("JWT Secret not configured");
 
@@ -92,6 +89,9 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+app.UseExceptionHandling();
+app.UseRateLimiting();
 
 if (app.Environment.IsDevelopment())
 {

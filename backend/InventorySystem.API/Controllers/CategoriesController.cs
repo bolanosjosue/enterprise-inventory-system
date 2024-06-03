@@ -2,10 +2,12 @@
 using InventorySystem.Application.Categories.Queries.GetCategories;
 using InventorySystem.Application.Categories.Queries.GetCategoryById;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InventorySystem.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class CategoriesController : ControllerBase
@@ -40,6 +42,7 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin,Supervisor")]
     public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryCommand command)
     {
         var result = await _mediator.Send(command);
