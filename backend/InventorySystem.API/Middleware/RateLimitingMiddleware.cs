@@ -30,7 +30,8 @@ public class RateLimitingMiddleware
 
         var clientInfo = _clients.GetOrAdd(clientId, _ => new ClientRequestInfo());
 
-        lock (clientInfo)
+        await clientInfo.Semaphore.WaitAsync();
+        try
         {
             if (clientInfo.LastRequest.Add(TimeWindow) < DateTime.UtcNow)
             {
@@ -54,6 +55,10 @@ public class RateLimitingMiddleware
                 return;
             }
         }
+        finally
+        {
+            clientInfo.Semaphore.Release();
+        }
 
         await _next(context);
     }
@@ -69,5 +74,6 @@ public class RateLimitingMiddleware
     {
         public int RequestCount { get; set; }
         public DateTime LastRequest { get; set; } = DateTime.UtcNow;
+        public SemaphoreSlim Semaphore { get; } = new(1, 1);
     }
 }

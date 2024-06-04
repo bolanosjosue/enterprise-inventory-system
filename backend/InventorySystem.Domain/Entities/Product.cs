@@ -76,16 +76,17 @@ public class Product : AuditableEntity, ISoftDeletable
         };
     }
 
-    public void UpdateInfo(string name, string? description, decimal price, decimal cost, int minimumStock, int maximumStock)
+    public void UpdateInfo(
+        string name,
+        string? description,
+        int minimumStock,
+        int maximumStock,
+        Guid categoryId,
+        Guid? supplierId,
+        string? imageUrl)
     {
         if (string.IsNullOrWhiteSpace(name))
             throw new ArgumentException("Product name is required", nameof(name));
-
-        if (price <= 0)
-            throw new InvalidPriceException(price);
-
-        if (cost < 0)
-            throw new ArgumentException("Cost cannot be negative", nameof(cost));
 
         if (minimumStock < 0)
             throw new ArgumentException("Minimum stock cannot be negative", nameof(minimumStock));
@@ -95,10 +96,23 @@ public class Product : AuditableEntity, ISoftDeletable
 
         Name = name.Trim();
         Description = description?.Trim();
-        Price = price;
-        Cost = cost;
         MinimumStock = minimumStock;
         MaximumStock = maximumStock;
+        CategoryId = categoryId;
+        SupplierId = supplierId;
+        ImageUrl = imageUrl;
+    }
+
+    public void UpdatePrice(decimal price, decimal cost)
+    {
+        if (price <= 0)
+            throw new InvalidPriceException(price);
+
+        if (cost < 0)
+            throw new ArgumentException("Cost cannot be negative", nameof(cost));
+
+        Price = price;
+        Cost = cost;
     }
 
     public void UpdateCategory(Guid categoryId) => CategoryId = categoryId;

@@ -1,4 +1,6 @@
 ﻿using InventorySystem.Application.Products.Commands.CreateProduct;
+using InventorySystem.Application.Products.Commands.DeleteProduct;
+using InventorySystem.Application.Products.Commands.UpdateProduct;
 using InventorySystem.Application.Products.Queries.GetProductById;
 using InventorySystem.Application.Products.Queries.GetProducts;
 using MediatR;
@@ -67,6 +69,33 @@ public class ProductsController : ControllerBase
             return BadRequest(new { error = result.Error });
 
         return CreatedAtAction(nameof(GetProductById), new { id = result.Value.Id }, result.Value);
+    }
+
+    [HttpPut("{id}")]
+    [Authorize(Roles = "Admin,Supervisor")]
+    public async Task<IActionResult> UpdateProduct(Guid id, [FromBody] UpdateProductCommand command)
+    {
+        if (id != command.Id)
+            return BadRequest(new { error = "ID mismatch" });
+
+        var result = await _mediator.Send(command);
+
+        if (result.IsFailure)
+            return BadRequest(new { error = result.Error });
+
+        return Ok(result.Value);
+    }
+
+    [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> DeleteProduct(Guid id)
+    {
+        var result = await _mediator.Send(new DeleteProductCommand(id));
+
+        if (result.IsFailure)
+            return NotFound(new { error = result.Error });
+
+        return NoContent();
     }
 
     [HttpGet("low-stock")]
