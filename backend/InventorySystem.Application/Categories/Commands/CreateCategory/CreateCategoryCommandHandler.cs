@@ -6,7 +6,7 @@ using MediatR;
 
 namespace InventorySystem.Application.Categories.Commands.CreateCategory;
 
-public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, Result<CategoryDo>>
+public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, Result<CategoryDto>>
 {
     private readonly IRepository<Category> _categoryRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -19,21 +19,21 @@ public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryComman
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Result<CategoryDo>> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
+    public async Task<Result<CategoryDto>> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
     {
         var nameExists = await _categoryRepository.ExistsAsync(
             c => c.Name.ToLower() == request.Name.ToLower(),
             cancellationToken);
 
         if (nameExists)
-            return Result.Failure<CategoryDo>($"Category '{request.Name}' already exists");
+            return Result.Failure<CategoryDto>($"Category '{request.Name}' already exists");
 
         var category = Category.Create(request.Name, request.Description);
 
         await _categoryRepository.AddAsync(category, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        var dto = new CategoryDo
+        var dto = new CategoryDto
         {
             Id = category.Id,
             Name = category.Name,

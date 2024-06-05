@@ -1,6 +1,6 @@
 ﻿namespace InventorySystem.Application.Categories.DTOs;
 
-public class CategoryDo
+public class CategoryDto
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty;

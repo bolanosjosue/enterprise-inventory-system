@@ -1,4 +1,6 @@
 ﻿using InventorySystem.Application.Categories.Commands.CreateCategory;
+using InventorySystem.Application.Categories.Commands.DeleteCategory;
+using InventorySystem.Application.Categories.Commands.UpdateCategory;
 using InventorySystem.Application.Categories.Queries.GetCategories;
 using InventorySystem.Application.Categories.Queries.GetCategoryById;
 using MediatR;
@@ -51,5 +53,32 @@ public class CategoriesController : ControllerBase
             return BadRequest(new { error = result.Error });
 
         return CreatedAtAction(nameof(GetCategoryById), new { id = result.Value.Id }, result.Value);
+    }
+
+    [HttpPut("{id}")]
+    [Authorize(Roles = "Admin,Supervisor")]
+    public async Task<IActionResult> UpdateCategory(Guid id, [FromBody] UpdateCategoryCommand command)
+    {
+        if (id != command.Id)
+            return BadRequest(new { error = "ID mismatch" });
+
+        var result = await _mediator.Send(command);
+
+        if (result.IsFailure)
+            return BadRequest(new { error = result.Error });
+
+        return Ok(result.Value);
+    }
+
+    [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> DeleteCategory(Guid id)
+    {
+        var result = await _mediator.Send(new DeleteCategoryCommand(id));
+
+        if (result.IsFailure)
+            return BadRequest(new { error = result.Error });
+
+        return NoContent();
     }
 }

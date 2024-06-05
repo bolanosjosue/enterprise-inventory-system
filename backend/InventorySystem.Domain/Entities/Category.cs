@@ -25,6 +25,15 @@ public class Category : AuditableEntity, ISoftDeletable
         };
     }
 
+    public void UpdateInfo(string name, string? description)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            throw new ArgumentException("Category name is required", nameof(name));
+
+        Name = name.Trim();
+        Description = description?.Trim();
+    }
+
     public void UpdateName(string name)
     {
         if (string.IsNullOrWhiteSpace(name))
