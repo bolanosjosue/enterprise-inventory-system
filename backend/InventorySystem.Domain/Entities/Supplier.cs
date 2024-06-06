@@ -51,8 +51,20 @@ public class Supplier : AuditableEntity, ISoftDeletable
         Address = address?.Trim();
     }
 
+    public void UpdateContactInfo(string name, string? email, string? phone, string? address)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            throw new ArgumentException("Supplier name is required", nameof(name));
+
+        Name = name.Trim();
+        Email = email?.Trim();
+        Phone = phone?.Trim();
+        Address = address?.Trim();
+    }
+
     public void Activate() => IsActive = true;
     public void Deactivate() => IsActive = false;
+
     public void SoftDelete() => IsDeleted = true;
     public void Restore() => IsDeleted = false;
 }

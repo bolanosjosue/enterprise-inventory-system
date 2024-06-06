@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using InventorySystem.Application.Common.Models;
+using InventorySystem.Application.Suppliers.DTOs;
+using MediatR;
 
-namespace InventorySystem.Application.Suppliers.Commands.UpdateSupplier
+namespace InventorySystem.Application.Suppliers.Commands.UpdateSupplier;
+
+public record UpdateSupplierCommand : IRequest<Result<SupplierDto>>
 {
-    internal class UpdateSupplierCommand
-    {
-    }
+    public Guid Id { get; init; }
+    public string Name { get; init; } = string.Empty;
+    public string? Email { get; init; }
+    public string? Phone { get; init; }
+    public string? Address { get; init; }
 }

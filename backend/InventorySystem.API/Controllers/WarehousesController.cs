@@ -1,4 +1,5 @@
 ﻿using InventorySystem.Application.Warehouses.Commands.CreateWarehouse;
+using InventorySystem.Application.Warehouses.Commands.UpdateWarehouse;
 using InventorySystem.Application.Warehouses.Queries.GetWarehouseById;
 using InventorySystem.Application.Warehouses.Queries.GetWarehouses;
 using MediatR;
@@ -51,5 +52,20 @@ public class WarehousesController : ControllerBase
             return BadRequest(new { error = result.Error });
 
         return CreatedAtAction(nameof(GetWarehouseById), new { id = result.Value.Id }, result.Value);
+    }
+
+    [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> UpdateWarehouse(Guid id, [FromBody] UpdateWarehouseCommand command)
+    {
+        if (id != command.Id)
+            return BadRequest(new { error = "ID mismatch" });
+
+        var result = await _mediator.Send(command);
+
+        if (result.IsFailure)
+            return BadRequest(new { error = result.Error });
+
+        return Ok(result.Value);
     }
 }

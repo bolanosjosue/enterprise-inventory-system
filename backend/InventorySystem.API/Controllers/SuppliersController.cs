@@ -1,4 +1,5 @@
 ﻿using InventorySystem.Application.Suppliers.Commands.CreateSupplier;
+using InventorySystem.Application.Suppliers.Commands.UpdateSupplier;
 using InventorySystem.Application.Suppliers.Queries.GetSupplierById;
 using InventorySystem.Application.Suppliers.Queries.GetSuppliers;
 using MediatR;
@@ -51,5 +52,20 @@ public class SuppliersController : ControllerBase
             return BadRequest(new { error = result.Error });
 
         return CreatedAtAction(nameof(GetSupplierById), new { id = result.Value.Id }, result.Value);
+    }
+
+    [HttpPut("{id}")]
+    [Authorize(Roles = "Admin,Supervisor")]
+    public async Task<IActionResult> UpdateSupplier(Guid id, [FromBody] UpdateSupplierCommand command)
+    {
+        if (id != command.Id)
+            return BadRequest(new { error = "ID mismatch" });
+
+        var result = await _mediator.Send(command);
+
+        if (result.IsFailure)
+            return BadRequest(new { error = result.Error });
+
+        return Ok(result.Value);
     }
 }
