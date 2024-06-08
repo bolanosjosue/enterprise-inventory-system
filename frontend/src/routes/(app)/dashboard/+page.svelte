@@ -75,7 +75,7 @@
       </h2>
 
       <div class="flex flex-wrap justify-center gap-4">
-        <a href="/products/create" class="btn btn-primary">
+        <a href="/products" class="btn btn-primary">
           Nuevo Producto
         </a>
 
