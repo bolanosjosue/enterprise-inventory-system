@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using InventorySystem.Application.Authentication.DTOs;
+using InventorySystem.Application.Common.Models;
+using MediatR;
 
-namespace InventorySystem.Application.Authentication.Queries.GetUsers
-{
-    internal class GetUsersQuery
-    {
-    }
-}
+namespace InventorySystem.Application.Authentication.Queries.GetUsers;
+
+public record GetUsersQuery : IRequest<Result<List<UserDto>>>;

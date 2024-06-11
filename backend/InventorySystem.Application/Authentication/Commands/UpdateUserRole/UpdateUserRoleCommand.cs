@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using InventorySystem.Application.Authentication.DTOs;
+using InventorySystem.Application.Common.Models;
+using MediatR;
 
-namespace InventorySystem.Application.Authentication.Commands.UpdateUserRole
+namespace InventorySystem.Application.Authentication.Commands.UpdateUserRole;
+
+public record UpdateUserRoleCommand : IRequest<Result<UserDto>>
 {
-    internal class UpdateUserRoleCommand
-    {
-    }
+    public Guid UserId { get; init; }
+    public string Role { get; init; } = string.Empty;
 }
