@@ -11,12 +11,14 @@
   import { Edit, UserCheck, UserX } from 'lucide-svelte';
   import { format } from 'date-fns';
   import { es } from 'date-fns/locale';
+  import { parseApiError } from '$lib/utils/errorParser';
 
   let currentUser = null;
   let users = [];
   let loading = true;
   let error = '';
   let success = '';
+  let errorDetails = null;
   
   let modalOpen = false;
   let editingUser = null;
@@ -73,21 +75,24 @@
     event.preventDefault();
     formLoading = true;
     error = '';
+    errorDetails = null;
     success = '';
 
     try {
-      await usersApi.updateRole(editingUser.id, selectedRole);
-      success = 'Rol actualizado exitosamente';
-      await loadUsers();
-      setTimeout(() => {
+        await usersApi.updateRole(editingUser.id, selectedRole);
+        success = 'Rol actualizado exitosamente';
+        await loadUsers();
+        setTimeout(() => {
         closeModal();
-      }, 1000);
+        }, 1000);
     } catch (err) {
-      error = err.response?.data?.error || 'Error al actualizar rol';
+        const parsed = parseApiError(err);
+        error = parsed.message;
+        errorDetails = parsed.errors;
     } finally {
-      formLoading = false;
+        formLoading = false;
     }
-  }
+    }
 
   async function handleToggleStatus(userId) {
     try {
@@ -139,7 +144,7 @@
     </div>
   </div>
 
-  <Alert type="error" message={error} />
+  <Alert type="error" message={error} errors={errorDetails} />
   <Alert type="success" message={success} />
 
   <!-- Info Card -->
@@ -240,7 +245,7 @@
   onClose={closeModal}
 >
   <form on:submit={handleUpdateRole} class="space-y-4">
-    <Alert type="error" message={error} />
+    <Alert type="error" message={error} errors={errorDetails} />
     <Alert type="success" message={success} />
 
     {#if editingUser}

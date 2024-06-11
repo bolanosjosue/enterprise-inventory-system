@@ -10,12 +10,14 @@
   import Alert from '$lib/components/ui/Alert.svelte';
   import Modal from '$lib/components/ui/Modal.svelte';
   import { Plus, Edit, Trash2, Search } from 'lucide-svelte';
+  import { parseApiError } from '$lib/utils/errorParser';
 
   let products = [];
   let categories = [];
   let suppliers = [];
   let loading = true;
   let error = '';
+  let errorDetails = null;
   let success = '';
   let search = '';
   
@@ -126,27 +128,30 @@
     event.preventDefault();
     formLoading = true;
     error = '';
+    errorDetails = null; // Nueva variable
     success = '';
 
     try {
-      if (modalMode === 'create') {
+        if (modalMode === 'create') {
         await productsApi.create(form);
         success = 'Producto creado exitosamente';
-      } else {
+        } else {
         await productsApi.update(editingProduct.id, form);
         success = 'Producto actualizado exitosamente';
-      }
-      
-      await loadProducts();
-      setTimeout(() => {
+        }
+        
+        await loadProducts();
+        setTimeout(() => {
         closeModal();
-      }, 1000);
+        }, 1000);
     } catch (err) {
-      error = err.response?.data?.error || 'Error al guardar producto';
+        const parsed = parseApiError(err);
+        error = parsed.message;
+        errorDetails = parsed.errors;
     } finally {
-      formLoading = false;
+        formLoading = false;
     }
-  }
+    }
 
   async function handleDelete(id) {
     if (!confirm('¿Estás seguro de eliminar este producto?')) return;
@@ -189,7 +194,7 @@
     </Button>
   </div>
 
-  <Alert type="error" message={error} />
+  <Alert type="error" message={error} errors={errorDetails} />
   <Alert type="success" message={success} />
 
   <!-- Filters -->
@@ -285,7 +290,7 @@
   onClose={closeModal}
 >
   <form on:submit={handleSubmit} class="space-y-4">
-    <Alert type="error" message={error} />
+    <Alert type="error" message={error} errors={errorDetails} />
     <Alert type="success" message={success} />
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">

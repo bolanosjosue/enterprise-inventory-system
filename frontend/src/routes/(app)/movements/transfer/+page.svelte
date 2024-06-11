@@ -9,11 +9,15 @@
   import Select from '$lib/components/ui/Select.svelte';
   import Alert from '$lib/components/ui/Alert.svelte';
   import { ArrowLeft, ArrowRight } from 'lucide-svelte';
+  import { parseApiError } from '$lib/utils/errorParser';
+
 
   let products = [];
   let warehouses = [];
   let loading = false;
   let error = '';
+  let errorDetails = null;
+
   let success = '';
   let availableStock = null;
 
@@ -88,7 +92,9 @@
         goto('/movements');
       }, 1500);
     } catch (err) {
-      error = err.response?.data?.error || 'Error al registrar transferencia';
+        const parsed = parseApiError(err);
+        error = parsed.message;
+        errorDetails = parsed.errors;
     } finally {
       loading = false;
     }
@@ -121,7 +127,7 @@
   <!-- Form -->
   <div class="card">
     <form on:submit={handleSubmit} class="space-y-6">
-      <Alert type="error" message={error} />
+      <Alert type="error" message={error} errors={errorDetails} />
       <Alert type="success" message={success} />
 
       <div>

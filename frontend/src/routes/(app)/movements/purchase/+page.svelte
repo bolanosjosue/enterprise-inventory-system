@@ -9,12 +9,16 @@
   import Select from '$lib/components/ui/Select.svelte';
   import Alert from '$lib/components/ui/Alert.svelte';
   import { ArrowLeft } from 'lucide-svelte';
+  import { parseApiError } from '$lib/utils/errorParser';
+  
 
   let products = [];
   let warehouses = [];
   let loading = false;
   let error = '';
+  
   let success = '';
+  let errorDetails = null;
 
   let form = {
     productId: '',
@@ -47,31 +51,33 @@
     event.preventDefault();
     loading = true;
     error = '';
+    errorDetails = null;
     success = '';
 
     try {
-      await stockMovementsApi.processPurchase(form);
-      success = 'Compra registrada exitosamente';
-      
-      // Reset form
-      form = {
+        await stockMovementsApi.processPurchase(form);
+        success = 'Compra registrada exitosamente';
+        
+        form = {
         productId: '',
         warehouseId: '',
         quantity: 0,
         unitPrice: 0,
         reference: '',
         notes: ''
-      };
+        };
 
-      setTimeout(() => {
+        setTimeout(() => {
         goto('/movements');
-      }, 1500);
+        }, 1500);
     } catch (err) {
-      error = err.response?.data?.error || 'Error al registrar compra';
+        const parsed = parseApiError(err);
+        error = parsed.message;
+        errorDetails = parsed.errors;
     } finally {
-      loading = false;
+        loading = false;
     }
-  }
+    }
 
   $: productOptions = products.map(p => ({ value: p.id, label: `${p.sku} - ${p.name}` }));
   $: warehouseOptions = warehouses.map(w => ({ value: w.id, label: w.name }));
@@ -96,7 +102,7 @@
   <!-- Form -->
   <div class="card">
     <form on:submit={handleSubmit} class="space-y-6">
-      <Alert type="error" message={error} />
+      <Alert type="error" message={error} errors={errorDetails} />
       <Alert type="success" message={success} />
 
       <div>

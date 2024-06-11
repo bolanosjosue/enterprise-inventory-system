@@ -7,10 +7,12 @@
   import Alert from '$lib/components/ui/Alert.svelte';
   import Modal from '$lib/components/ui/Modal.svelte';
   import { Plus, Edit, Trash2 } from 'lucide-svelte';
+  import { parseApiError } from '$lib/utils/errorParser';
 
   let categories = [];
   let loading = true;
   let error = '';
+  let errorDetails = null;
   let success = '';
   
   let modalOpen = false;
@@ -70,27 +72,30 @@
     event.preventDefault();
     formLoading = true;
     error = '';
+    errorDetails = null;
     success = '';
 
     try {
-      if (modalMode === 'create') {
+        if (modalMode === 'create') {
         await categoriesApi.create(form);
         success = 'Categoría creada exitosamente';
-      } else {
+        } else {
         await categoriesApi.update(editingCategory.id, form);
         success = 'Categoría actualizada exitosamente';
-      }
-      
-      await loadCategories();
-      setTimeout(() => {
+        }
+        
+        await loadCategories();
+        setTimeout(() => {
         closeModal();
-      }, 1000);
+        }, 1000);
     } catch (err) {
-      error = err.response?.data?.error || 'Error al guardar categoría';
+        const parsed = parseApiError(err);
+        error = parsed.message;
+        errorDetails = parsed.errors;
     } finally {
-      formLoading = false;
+        formLoading = false;
     }
-  }
+    }
 
   async function handleDelete(id) {
     if (!confirm('¿Estás seguro de eliminar esta categoría?')) return;
@@ -123,7 +128,7 @@
     </Button>
   </div>
 
-  <Alert type="error" message={error} />
+  <Alert type="error" message={error} errors={errorDetails} />
   <Alert type="success" message={success} />
 
   <!-- Table -->
@@ -180,7 +185,7 @@
   onClose={closeModal}
 >
   <form on:submit={handleSubmit} class="space-y-4">
-    <Alert type="error" message={error} />
+    <Alert type="error" message={error} errors={errorDetails} />
     <Alert type="success" message={success} />
 
     <div>

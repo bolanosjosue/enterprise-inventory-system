@@ -7,12 +7,14 @@
   import Alert from '$lib/components/ui/Alert.svelte';
   import Modal from '$lib/components/ui/Modal.svelte';
   import { Plus, Edit, Warehouse } from 'lucide-svelte';
+  import { parseApiError } from '$lib/utils/errorParser';
 
   let warehouses = [];
   let loading = true;
   let error = '';
   let success = '';
-  
+  let errorDetails = null;
+
   let modalOpen = false;
   let modalMode = 'create';
   let editingWarehouse = null;
@@ -72,27 +74,30 @@
     event.preventDefault();
     formLoading = true;
     error = '';
+    errorDetails = null;
     success = '';
 
     try {
-      if (modalMode === 'create') {
+        if (modalMode === 'create') {
         await warehousesApi.create(form);
         success = 'Bodega creada exitosamente';
-      } else {
+        } else {
         await warehousesApi.update(editingWarehouse.id, form);
         success = 'Bodega actualizada exitosamente';
-      }
-      
-      await loadWarehouses();
-      setTimeout(() => {
+        }
+        
+        await loadWarehouses();
+        setTimeout(() => {
         closeModal();
-      }, 1000);
+        }, 1000);
     } catch (err) {
-      error = err.response?.data?.error || 'Error al guardar bodega';
+        const parsed = parseApiError(err);
+        error = parsed.message;
+        errorDetails = parsed.errors;
     } finally {
-      formLoading = false;
+        formLoading = false;
     }
-  }
+    }
 </script>
 
 <svelte:head>
@@ -112,7 +117,7 @@
     </Button>
   </div>
 
-  <Alert type="error" message={error} />
+  <Alert type="error" message={error} errors={errorDetails} />
   <Alert type="success" message={success} />
 
   <!-- Cards Grid -->
@@ -195,7 +200,7 @@
   onClose={closeModal}
 >
   <form on:submit={handleSubmit} class="space-y-4">
-    <Alert type="error" message={error} />
+    <Alert type="error" message={error} errors={errorDetails} />
     <Alert type="success" message={success} />
 
     <div>

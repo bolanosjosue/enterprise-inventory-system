@@ -7,11 +7,13 @@
   import Alert from '$lib/components/ui/Alert.svelte';
   import Modal from '$lib/components/ui/Modal.svelte';
   import { Plus, Edit } from 'lucide-svelte';
+  import { parseApiError } from '$lib/utils/errorParser';
 
   let suppliers = [];
   let loading = true;
   let error = '';
   let success = '';
+  let errorDetails = null;
   
   let modalOpen = false;
   let modalMode = 'create';
@@ -76,27 +78,30 @@
     event.preventDefault();
     formLoading = true;
     error = '';
+    errorDetails = null;
     success = '';
 
     try {
-      if (modalMode === 'create') {
+        if (modalMode === 'create') {
         await suppliersApi.create(form);
         success = 'Proveedor creado exitosamente';
-      } else {
+        } else {
         await suppliersApi.update(editingSupplier.id, form);
         success = 'Proveedor actualizado exitosamente';
-      }
-      
-      await loadSuppliers();
-      setTimeout(() => {
+        }
+        
+        await loadSuppliers();
+        setTimeout(() => {
         closeModal();
-      }, 1000);
+        }, 1000);
     } catch (err) {
-      error = err.response?.data?.error || 'Error al guardar proveedor';
+        const parsed = parseApiError(err);
+        error = parsed.message;
+        errorDetails = parsed.errors;
     } finally {
-      formLoading = false;
+        formLoading = false;
     }
-  }
+    }
 </script>
 
 <svelte:head>
@@ -116,7 +121,7 @@
     </Button>
   </div>
 
-  <Alert type="error" message={error} />
+  <Alert type="error" message={error} errors={errorDetails} />
   <Alert type="success" message={success} />
 
   <!-- Table -->
@@ -177,7 +182,7 @@
   onClose={closeModal}
 >
   <form on:submit={handleSubmit} class="space-y-4">
-    <Alert type="error" message={error} />
+    <Alert type="error" message={error} errors={errorDetails} />
     <Alert type="success" message={success} />
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
