@@ -157,14 +157,16 @@
     if (!confirm('¿Estás seguro de eliminar este producto?')) return;
 
     try {
-      await productsApi.delete(id);
-      success = 'Producto eliminado exitosamente';
-      await loadProducts();
-      setTimeout(() => { success = ''; }, 3000);
+        await productsApi.delete(id);
+        success = 'Producto eliminado exitosamente';
+        await loadProducts();
+        setTimeout(() => { success = ''; }, 3000);
     } catch (err) {
-      error = err.response?.data?.error || 'Error al eliminar producto';
+        const parsed = parseApiError(err);
+        error = parsed.message;
+        errorDetails = parsed.errors;
     }
-  }
+    }
 
   function formatPrice(price) {
     return new Intl.NumberFormat('es-CR', {

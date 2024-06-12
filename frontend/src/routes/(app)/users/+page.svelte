@@ -96,12 +96,14 @@
 
   async function handleToggleStatus(userId) {
     try {
-      await usersApi.toggleStatus(userId);
-      success = 'Estado actualizado exitosamente';
-      await loadUsers();
-      setTimeout(() => { success = ''; }, 3000);
+        await usersApi.toggleStatus(userId);
+        success = 'Estado actualizado exitosamente';
+        await loadUsers();
+        setTimeout(() => { success = ''; }, 3000);
     } catch (err) {
-      error = err.response?.data?.error || 'Error al cambiar estado';
+        const parsed = parseApiError(err);
+        error = parsed.message;
+        errorDetails = parsed.errors;
     }
   }
 

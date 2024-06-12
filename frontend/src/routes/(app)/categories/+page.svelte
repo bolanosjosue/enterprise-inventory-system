@@ -101,14 +101,16 @@
     if (!confirm('¿Estás seguro de eliminar esta categoría?')) return;
 
     try {
-      await categoriesApi.delete(id);
-      success = 'Categoría eliminada exitosamente';
-      await loadCategories();
-      setTimeout(() => { success = ''; }, 3000);
+        await categoriesApi.delete(id);
+        success = 'Categoría eliminada exitosamente';
+        await loadCategories();
+        setTimeout(() => { success = ''; }, 3000);
     } catch (err) {
-      error = err.response?.data?.error || 'Error al eliminar categoría';
+        const parsed = parseApiError(err);
+        error = parsed.message;
+        errorDetails = parsed.errors;
     }
-  }
+    }
 </script>
 
 <svelte:head>
