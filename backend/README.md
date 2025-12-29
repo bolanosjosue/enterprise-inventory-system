@@ -565,10 +565,6 @@ http://localhost:5094
 
 ---
 
-## 🤝 **Contribuciones**
-
----
-
 ## 📄 **Licencia**
 
 Este proyecto es de código abierto bajo la licencia MIT.
