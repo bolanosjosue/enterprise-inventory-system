@@ -1,7 +1,16 @@
 ﻿# 🏢 Enterprise Inventory Management System
 
 Sistema completo de gestión de inventario empresarial con **Clean Architecture**, **CQRS** y tecnologías modernas.
+De completo https://www.youtube.com/watch?v=eL_GLob7dto
+---
 
+## 🎥 Demo del Sistema
+
+### 🔍 Demostración funcional completa
+En el siguiente video se presenta un recorrido por la aplicación, mostrando su funcionamiento desde la perspectiva de un usuario final.
+
+👉 **Ver demo en YouTube:**  
+https://www.youtube.com/watch?v=eL_GLob7dto
 ---
 
 ## 📸 **Screenshots**
