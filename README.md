@@ -5,11 +5,11 @@ Sistema completo de gestión de inventario empresarial con **Clean Architecture*
 
 ## 🎥 Demo del Sistema
 
-### 🔍 Demostración funcional completa
+### 🔍 **Demostración funcional completa**
 En el siguiente video se presenta un recorrido por la aplicación, mostrando su funcionamiento desde la perspectiva de un usuario final.
 
-👉 **Ver demo en YouTube:**  
-https://www.youtube.com/watch?v=eL_GLob7dto
+### 👉 **Ver demo en YouTube:**  
+### https://www.youtube.com/watch?v=eL_GLob7dto
 ---
 
 ## 📸 **Screenshots**
